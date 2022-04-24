@@ -1,4 +1,3 @@
-
 #include <iostream>
 using namespace std;
 
@@ -13,50 +12,87 @@ public:
 		stepen = step;
 	}
 
+	friend char** splitt(char* stroka, char razdel1, char razdel2) {
+		char** res = new char* [100];
+		for (int i = 0; i < strlen(stroka)+1; i++){
+			if (stroka[i] == razdel1 or stroka[i] == razdel2) {
+			
+			}
+		}
+	}
+
 	friend istream& operator>>(istream& in, Term& newTerm) {
+		
 		char bufstroka[20];
 		char bufkoef[20];
 		char bufstepen[20];
-		int ind = 0, indX = 0;
-		in.getline(bufstroka,100);
+		
+		in.getline(bufstroka, 100);
 
-		bool onlyX = true, nostepen = true;
+		for (int i = 0; i < strlen(bufstroka); i++){
+			if (bufstroka[i] == ' ') {
+				for (int j = i+1; j < strlen(bufstroka)+1; j++){
+					bufstroka[j - 1] = bufstroka[j];
+				}
+			}
+		}
 
+
+		bool noX = true;
+
+		int count = 1;
+		for (int i = 0; i < strlen(bufstroka)+1; i++){
+			if (bufstroka[i] == '+' or bufstroka[i] == '-') {
+				count++;
+			}
+			if (bufstroka[i] == 'x'){
+				noX = false;
+			}
+		}
 		
 
-		for (int i = 0; bufstroka[i] != 'x'; i++) {
-			if (bufstroka[i] == ' ') {
-				continue;
+		int ind = 0, indX = 0;
+		if (count != 1) {
+			bool onlyX = true, nostepen = true;
+			for (int i = 0; bufstroka[i] != 'x'; i++) {
+				if (bufstroka[i] == ' ') {
+					continue;
+				}
+				else {
+					onlyX = false;
+					bufkoef[ind] = bufstroka[i];
+					ind++;
+
+				}
+				indX = ind + 1;
 			}
-			else {
-				onlyX = false;
-				bufkoef[ind] = bufstroka[i];
-				ind++;
-				
+			newTerm.koef = atoi(bufkoef);
+
+			ind = 0;
+			for (int i = indX + 1; i < strlen(bufstroka); i++) {
+				if (bufstroka[i] != ' ' and bufstroka[i] != '^') {
+					nostepen = false;
+					bufstepen[ind] = bufstroka[i];
+					ind++;
+				}
 			}
-			indX = i + 1;
-		}
-		newTerm.koef = atoi(bufkoef);
 
-		ind = 0;
-		for (int i = indX + 1; i < strlen(bufstroka); i++) {
-			if (bufstroka[i] != ' ' and bufstroka[i] != '^') {
-				nostepen = false;
-				bufstepen[ind] = bufstroka[i];
-				ind++;
+			newTerm.stepen = atoi(bufstepen);
+
+			if (onlyX) {
+				newTerm.koef = 1;
+			}
+
+			if (nostepen) {
+				newTerm.stepen = 1;
 			}
 		}
 
-		newTerm.stepen = atoi(bufstepen);
-
-		if(onlyX) {
-			newTerm.koef = 1;
+		else {
+			Term* mas_of_term = new Term[count];
+			
+		
 		}
-
-		if (nostepen) {
-			newTerm.stepen = 1;
-		}
-
 		return in;
 	}
 
@@ -89,7 +125,7 @@ public:
 			else {
 				out << T.koef << "x^" << T.stepen;
 			}
-			
+
 		}
 		return out;
 	}
@@ -97,5 +133,3 @@ public:
 
 
 };
-
-

@@ -1,6 +1,4 @@
-﻿
-
-#include "Term.h"
+﻿#include "Term.h"
 
 int main()
 {
@@ -9,4 +7,3 @@ int main()
     cin >> lol1;
     cout << lol + lol1;
 }
-
