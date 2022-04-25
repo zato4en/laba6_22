@@ -57,12 +57,23 @@ public:
         char bufstepen[20]; //подстрока для показателя степени
 
         in.getline(bufstroka, 100);
-
-        for (int i = 0; i < strlen(bufstroka); i++) {
-            if (bufstroka[i] == ' ') {
-                for (int j = i + 1; j < strlen(bufstroka) + 1; j++) {
-                    bufstroka[j - 1] = bufstroka[j];
+        bool flag_no_probel = true;
+        while(true) {
+            flag_no_probel = true;
+            for (int i = 0; i < strlen(bufstroka); i++) {
+                if (bufstroka[i] == ' ') {
+                    for (int j = i; j < strlen(bufstroka); j++) {
+                        bufstroka[j] = bufstroka[j + 1];
+                    }
                 }
+            }
+            for (int i = 0; i < strlen(bufstroka); ++i) {
+                if(bufstroka[i] == ' '){
+                    flag_no_probel = false;
+                }
+            }
+            if(flag_no_probel){
+                break;
             }
         }
         //убрали пробелы
@@ -87,10 +98,11 @@ public:
             for (int i = 0; i < count; ++i) {
                 strcpy(bufstroka,matr[i]);
                 if(bufstroka[0] == '+'){
-                    for (int i = 0; i < strlen(bufstroka); ++i) {
-                        УДАЛИТЬ НАХУЙ ПЛЮСЫ В НАЧАЛЕ ПОДСТРОКИ
+                    for (int j = 0; j < strlen(bufstroka); ++j) {
+                        bufstroka[j] = bufstroka[j+1];
                     }
                 }
+
                 bool nokoef = false, nostepen = true, noX = true;
                 if(bufstroka[0] == 'x'){
                     nokoef = true;
@@ -102,20 +114,25 @@ public:
                     if(bufstroka[j] == 'x'){
                         noX = false;
                     }
-                }
-                //проверили конкретный терм на наличие показателя и коэффа
+                } //проверили конкретный терм на наличие показателя и коэффа
+
 
                 if(nokoef){
                     mas_of_term[i].koef = 1;
                 }
                 else{
-                    int indexX = 0;
+                    int indexX = -1;
                     for (int j = 0; j < strlen(bufstroka)+1; ++j) {
                         if(bufstroka[j] == 'x'){
                             indexX = j;
                         }
                     }
-                    strcpy(bufkoef,slice(bufstroka,0,indexX-1));
+                    if(indexX != -1){
+                        strcpy(bufkoef,slice(bufstroka,0,indexX-1));
+                    }
+                    else{
+                        strcpy(bufkoef,slice(bufstroka,0,strlen(bufstroka)));
+                    }
                     if(bufkoef[0] == '-' and bufkoef[1] == '\0'){
                         mas_of_term[i].koef = -1;
                     }
@@ -125,6 +142,7 @@ public:
 
                 }
                 //заполнили коэф
+
 
                 if(nostepen){
                     if (noX) {
@@ -142,7 +160,7 @@ public:
                             indexX = j;
                         }
                     }
-                    strcpy(bufstepen, slice(bufstroka, 0, indexX));
+                    strcpy(bufstepen, slice(bufstroka, indexX+2, strlen(bufstroka)));
                     mas_of_term[i].stepen = atoi(bufstepen);
 
                 }
@@ -152,10 +170,11 @@ public:
 
             }
             newTerm.stepen = mas_of_term[0].stepen;
-            for (int i = 0; i < count; ++i) {
-                newTerm = newTerm + mas_of_term[i];
+            for (int j = 0; j < count; ++j) {
+                newTerm += mas_of_term[j];
             }
         }
+
 
         else{
             bool nokoef = false, nostepen = true, noX = true;
@@ -207,12 +226,12 @@ public:
                 newTerm.stepen = atoi(bufstepen);
 
             }
+            //заполнили степень
         }
-
-
-
         return in;
     }
+
+
 
     Term& operator+(const Term& t2) {
         Term res;
@@ -223,6 +242,15 @@ public:
         }
         return res;
     }
+
+    friend Term& operator+=(Term& left, const Term& right) {
+        if(left.stepen == right.stepen){
+            left.koef += right.koef;
+        }
+        return left;
+    }
+
+
 
     friend ostream& operator<<(ostream& out, Term& T) {
         if (T.stepen == 0) {
@@ -257,3 +285,5 @@ public:
 
 
 };
+
+
