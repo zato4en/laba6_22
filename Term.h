@@ -7,27 +7,30 @@ char* slice(char*s, int from, int to){
     char* buf = new char[strlen(s)+1];
     strcpy(buf,s);
     int j = 0;
-    for(int i = from; i < to; ++i)
+    for(int i = from; i <= to; ++i)
         buf[j++] = buf[i];
     buf[j] = 0;
     return buf;
 }
 
 char** splitt(char* stroka, char razdel1, char razdel2) {
-    char** res = new char* [100];
+    char** res = new char*[100];
     int ind_start = 0, ind_end = 0, count = 0;
+
     for (int i = 0; i < strlen(stroka)+1; i++){
         if (stroka[i] == razdel1 or stroka[i] == razdel2) {
-            ind_end = i;
-            res[count] = new char[ind_end - ind_start];
+            ind_end = i-1;
+            res[count] = new char[ind_end - ind_start+1];
             strcpy(res[count],slice(stroka,ind_start,ind_end));
             count++;
-            ind_start = ind_end + 1;
+            ind_start = ind_end+1;
         }
+
     }
     ind_end = strlen(stroka) - 1;
-    res[count] = new char[ind_end - ind_start + 1];
+    res[count] = new char[ind_end - ind_start];
     strcpy(res[count],slice(stroka,ind_start,ind_end));
+
 
     return res;
 }
@@ -83,6 +86,11 @@ public:
 
             for (int i = 0; i < count; ++i) {
                 strcpy(bufstroka,matr[i]);
+                if(bufstroka[0] == '+'){
+                    for (int i = 0; i < strlen(bufstroka); ++i) {
+                        УДАЛИТЬ НАХУЙ ПЛЮСЫ В НАЧАЛЕ ПОДСТРОКИ
+                    }
+                }
                 bool nokoef = false, nostepen = true, noX = true;
                 if(bufstroka[0] == 'x'){
                     nokoef = true;
@@ -107,8 +115,14 @@ public:
                             indexX = j;
                         }
                     }
-                    strcpy(bufkoef,slice(bufstroka,0,indexX));
-                    mas_of_term[i].koef = atoi(bufkoef);
+                    strcpy(bufkoef,slice(bufstroka,0,indexX-1));
+                    if(bufkoef[0] == '-' and bufkoef[1] == '\0'){
+                        mas_of_term[i].koef = -1;
+                    }
+                    else {
+                        mas_of_term[i].koef = atoi(bufkoef);
+                    }
+
                 }
                 //заполнили коэф
 
@@ -130,14 +144,14 @@ public:
                     }
                     strcpy(bufstepen, slice(bufstroka, 0, indexX));
                     mas_of_term[i].stepen = atoi(bufstepen);
-                    
+
                 }
 
                 //заполнили степень
 
 
             }
-
+            newTerm.stepen = mas_of_term[0].stepen;
             for (int i = 0; i < count; ++i) {
                 newTerm = newTerm + mas_of_term[i];
             }
@@ -218,6 +232,9 @@ public:
             if (T.koef == 1) {
                 out << 'x';
             }
+            else if(T.koef == 0){
+                out << '0';
+            }
             else {
                 out << T.koef << 'x';
             }
@@ -225,6 +242,9 @@ public:
         else {
             if (T.koef == 1) {
                 out << 'x^' << T.stepen;
+            }
+            else if (T.koef == 0){
+                out << '0';
             }
             else {
                 out << T.koef << "x^" << T.stepen;
