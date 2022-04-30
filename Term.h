@@ -37,9 +37,10 @@ char** splitt(char* stroka, char razdel1, char razdel2) {
 
 
 class Term {
-private:
+protected:
     int koef;
     int stepen;
+    friend class Polynomial;
 public:
     Term(int k = 0, int step = 0) {
         koef = k;
@@ -47,7 +48,13 @@ public:
     }
 
 
+    int get_koef(){
+        return this->koef;
+    }
 
+    int get_stepen(){
+        return this->stepen;
+    }
 
 
     friend istream& operator>>(istream& in, Term& newTerm) {
@@ -251,6 +258,12 @@ public:
     }
 
 
+    Term& operator=(const Term& t2){
+        this->stepen = t2.stepen;
+        this->koef = t2.koef;
+        return *this;
+    }
+
 
     friend ostream& operator<<(ostream& out, Term& T) {
         if (T.stepen == 0) {
@@ -285,5 +298,4 @@ public:
 
 
 };
-
 

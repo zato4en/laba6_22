@@ -1,13 +1,12 @@
-#include "Term.h"
 
-
-
+#include "Polynomial.h"
 
 int main()
 {
+    Polynomial p1,p2;
 
-    Term lol, lol1;
-    cin >> lol;
-    cout << lol;
-    return 0;
+    cin >> p1;
+    cin >> p2;
+    Polynomial p3 = (p1 + p2);
+    cout << p3;
 }
