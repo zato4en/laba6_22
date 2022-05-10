@@ -11,6 +11,10 @@ int main()
     cout << "input amount of terms, and then terms itself" << endl;
     cin >> p2;
     cout << p2;
-    Polynomial p3 = (p1 + p2);
+    Polynomial p3;
+    p3 = (p1 + p2);
+    p3.sortt();
+    cout << p3;
+    p3 = p1 * p2;
     cout << p3;
 }

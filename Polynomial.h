@@ -31,9 +31,32 @@ public:
             poly[0].stepen = stepenn;
         }
     }
-    ~Polynomial(){
-        delete[] poly;
+
+    Polynomial(Polynomial& P){
+        size = P.size;
+        poly = new Term[size];
+        for (int i = 0; i < size; ++i) {
+            poly[i] = P.poly[i];
+        }
     }
+
+    Polynomial& operator=(const Polynomial& P){
+        size = P.size;
+        if(this->poly != nullptr){
+            delete []poly;
+        }
+        poly = new Term[size];
+
+        for (int i = 0; i < size; ++i) {
+            poly[i] = P.poly[i];
+        }
+
+        return *this;
+    }
+//    ~Polynomial(){
+//        delete [] poly;
+//        delete poly;
+//    }
 
     void setsize(int count){
         size = count;
@@ -60,64 +83,86 @@ public:
                 in >> newPoly.poly[i];
             }
         }
-        newPoly.sort();
-        cinclear();
+        newPoly.sortt();
+        newPoly.sortt();
+        return in;
     }
 
     friend ostream& operator<<(ostream& out, Polynomial& newPoly){
         for (int i = 0; i < newPoly.size; ++i) {
+            if(newPoly.poly[i].koef == 0){
+                continue;
+            }
             out <<  newPoly.poly[i];
-            if(newPoly.size != 1 and i != newPoly.size - 1){
+            if(newPoly.size != 1 and i != newPoly.size-1 and newPoly.poly[i+1].koef > 0){
                 out << " + ";
             }
         }
         out << endl;
+        return out;
     }
 
     friend Polynomial operator+(Polynomial& p1, Polynomial& p2){
         Polynomial res;
         res.size = p1.size + p2.size;
-        p1.sort();
-        p2.sort();
-        int index;
+        res.resize();
+        p1.sortt();
+        p2.sortt();
+
         for (int i = 0; i < p1.size; ++i) {
             res.poly[i] = p1.poly[i];
-            if(p1.poly[i].get_koef() != 0 and p1.poly[i].get_stepen() != 0){
-                index = i;
-            }
         }
 
         int counter = 0;
-        for (int i = index+1; i < p1.size + p2.size; ++i) {
+        for (int i = p1.size; i < p1.size + p2.size; ++i) {
             res.poly[i] = p2.poly[counter];
             counter++;
         }
-        res.sort();
+        res.sortt();
         return res;
 
+    }
+
+    friend Polynomial operator*(Polynomial& p1, Polynomial& p2){
+        Polynomial res;
+        for (int i = 0; i < p1.size; ++i) {
+            for (int j = 0; j < p2.size; ++j) {
+                res.poly[res.size] = p1.poly[i] * p2.poly[j];
+                res.size++;
+                res.resize_1();
+            }
+            res.sortt();
+        }
+        return res;
+    }
+
+    void resize_1(){
+        Polynomial res;
+        res.poly = new Term [size + 1];
+        for (int i = 0; i < size; ++i) {
+            res.poly[i] = poly[i];
+        }
+        poly = res.poly;
     }
 
     void resize(){
         Polynomial res;
         res.poly = new Term [size];
-        for (int i = 0; i < size; ++i) {
-            res.poly[i] = poly[i];
-        }
-        delete [] poly;
         poly = res.poly;
+
 
     }
 
-    void sort(){
+    void sortt(){
 
 
 
         for (int i = 0; i < size-1; ++i) {
             for (int j = i+1; j < size; ++j) {
-                if(this->poly[i].stepen == this->poly[j].stepen){
-                    this->poly[i].koef += this->poly[j].koef;
+                if(poly[i].stepen == poly[j].stepen){
+                    poly[i].koef += poly[j].koef;
                     for (int k = j; k < size; ++k) {
-                        this->poly[k] = this->poly[k+1];
+                        poly[k] = poly[k+1];
                     }
                     size--;
                 }
@@ -125,10 +170,11 @@ public:
         }
         //сложили подобные
 
-        for (int i = 0; i < size-1; ++i) {
-            for (int j = i; j < size; ++j) {
-                if (this->poly[j].stepen < this->poly[j+1].stepen){
-                    swap(this->poly[j].stepen,this->poly[j+1].stepen);
+
+        for (int i = 0; i < size; ++i) {
+            for (int j = i+1; j < size; ++j) {
+                if (poly[i].stepen < poly[j].stepen){
+                    swap(poly[i],poly[j]);
                 }
             }
         }
@@ -145,15 +191,9 @@ public:
 
     }
 
-    Polynomial& operator=(const Polynomial& pnew){
-        for (int i = 0; i < 6; ++i) {
-            this->poly[i] = pnew.poly[i];
-        }
-        return *this;
-    }
+
 
 
 
 };
-
 
