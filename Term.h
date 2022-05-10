@@ -86,9 +86,15 @@ public:
         //убрали пробелы
 
         bool noX = true;
-
         int count = 1;
+
+        if(bufstroka[0] == '-' or bufstroka[0] == '+'){
+            count = 0;
+        }
+
+
         for (int i = 0; i < strlen(bufstroka) + 1; i++) {
+
             if (bufstroka[i] == '+' or bufstroka[i] == '-') {
                 count++;
             }
@@ -198,42 +204,49 @@ public:
             }
             //проверили конкретный терм на наличие показателя и коэффа
 
-            if(nokoef){
-                newTerm.koef = 1;
-            }
-            else{
-                int indexX = 0;
-                for (int j = 0; j < strlen(bufstroka)+1; ++j) {
-                    if(bufstroka[j] == 'x'){
-                        indexX = j;
-                    }
-                }
-                strcpy(bufkoef,slice(bufstroka,0,indexX));
+            if(noX){
+                strcpy(bufkoef, slice(bufstroka, 0, strlen(bufstroka)));
                 newTerm.koef = atoi(bufkoef);
+                newTerm.stepen = 0;
             }
-            //заполнили коэф
-
-            if(nostepen){
-                if (noX) {
-                    newTerm.stepen = 0;
-                }
-                else{
-                    newTerm.stepen = 1;
-                }
-
-            }
-            else{
-                int indexX = -1;
-                for (int j = 0; j < strlen(bufstroka) + 1; ++j) {
-                    if (bufstroka[j] == 'x') {
-                        indexX = j;
+            else {
+                if (nokoef) {
+                    newTerm.koef = 1;
+                } else {
+                    int indexX = 0;
+                    for (int j = 0; j < strlen(bufstroka) + 1; ++j) {
+                        if (bufstroka[j] == 'x') {
+                            indexX = j;
+                        }
                     }
+                    strcpy(bufkoef, slice(bufstroka, 0, indexX - 1));
+                    if (strcmp(bufkoef, "-") == 0) {
+                        strcpy(bufkoef, "-1");
+                    }
+                    newTerm.koef = atoi(bufkoef);
                 }
-                strcpy(bufstepen, slice(bufstroka, indexX+2, strlen(bufstroka)));
-                newTerm.stepen = atoi(bufstepen);
+                //заполнили коэф
 
+                if (nostepen) {
+                    if (noX) {
+                        newTerm.stepen = 0;
+                    } else {
+                        newTerm.stepen = 1;
+                    }
+
+                } else {
+                    int indexX = -1;
+                    for (int j = 0; j < strlen(bufstroka) + 1; ++j) {
+                        if (bufstroka[j] == 'x') {
+                            indexX = j;
+                        }
+                    }
+                    strcpy(bufstepen, slice(bufstroka, indexX + 2, strlen(bufstroka)));
+                    newTerm.stepen = atoi(bufstepen);
+
+                }
+                //заполнили степень
             }
-            //заполнили степень
         }
         return in;
     }
@@ -263,6 +276,12 @@ public:
         this->koef = t2.koef;
         return *this;
     }
+    Term operator *(const Term& T){
+        Term res;
+        res.koef = koef * T.koef;
+        res.stepen = stepen + T.stepen;
+        return res;
+    }
 
 
     friend ostream& operator<<(ostream& out, Term& T) {
@@ -282,7 +301,10 @@ public:
         }
         else {
             if (T.koef == 1) {
-                out << 'x^' << T.stepen;
+                out << "x^" << T.stepen;
+            }
+            else if (T.koef == -1) {
+                out << "-x^" << T.stepen;
             }
             else if (T.koef == 0){
                 out << '0';
@@ -298,4 +320,3 @@ public:
 
 
 };
-
