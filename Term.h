@@ -13,7 +13,7 @@ char* slice(char*s, int from, int to){
     return buf;
 }
 
-char** splitt(char* stroka, char razdel1, char razdel2) {
+char** splitt(char* stroka, char razdel1, char razdel2) { //python "split" analogue
     char** res = new char*[100];
     int ind_start = 0, ind_end = 0, count = 0;
 
@@ -25,12 +25,10 @@ char** splitt(char* stroka, char razdel1, char razdel2) {
             count++;
             ind_start = ind_end+1;
         }
-
     }
     ind_end = strlen(stroka) - 1;
     res[count] = new char[ind_end - ind_start];
     strcpy(res[count],slice(stroka,ind_start,ind_end));
-
 
     return res;
 }
@@ -47,7 +45,6 @@ public:
         stepen = step;
     }
 
-
     int get_koef(){
         return this->koef;
     }
@@ -56,8 +53,7 @@ public:
         return this->stepen;
     }
 
-
-    friend istream& operator>>(istream& in, Term& newTerm) {
+    friend istream& operator>>(istream& in, Term& newTerm) { //this func is a bit crazy tbh =)
 
         char bufstroka[20];//введенная строка
         char bufkoef[20]; //подстрока для коэффициента
@@ -129,7 +125,6 @@ public:
                     }
                 } //проверили конкретный терм на наличие показателя и коэффа
 
-
                 if(nokoef){
                     mas_of_term[i].koef = 1;
                 }
@@ -156,7 +151,6 @@ public:
                 }
                 //заполнили коэф
 
-
                 if(nostepen){
                     if (noX) {
                         mas_of_term[i].stepen = 0;
@@ -164,7 +158,6 @@ public:
                     else{
                         mas_of_term[i].stepen = 1;
                     }
-
                 }
                 else{
                     int indexX = -1;
@@ -180,14 +173,12 @@ public:
 
                 //заполнили степень
 
-
             }
             newTerm.stepen = mas_of_term[0].stepen;
             for (int j = 0; j < count; ++j) {
                 newTerm += mas_of_term[j];
             }
         }
-
 
         else{
             bool nokoef = false, nostepen = true, noX = true;
@@ -250,7 +241,6 @@ public:
         }
         return in;
     }
-
 
 
     Term& operator+(const Term& t2) {
