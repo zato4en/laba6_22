@@ -31,7 +31,7 @@ public:
             poly[0].stepen = stepenn;
         }
     }
-
+    
     Polynomial(Polynomial& P){
         size = P.size;
         poly = new Term[size];
@@ -39,7 +39,7 @@ public:
             poly[i] = P.poly[i];
         }
     }
-
+    
     Polynomial& operator=(const Polynomial& P){
         size = P.size;
         if(this->poly != nullptr){
@@ -53,10 +53,6 @@ public:
 
         return *this;
     }
-//    ~Polynomial(){
-//        delete [] poly;
-//        delete poly;
-//    }
 
     void setsize(int count){
         size = count;
@@ -136,7 +132,7 @@ public:
         return res;
     }
 
-    void resize_1(){
+    void resize_1(){ //+1
         Polynomial res;
         res.poly = new Term [size + 1];
         for (int i = 0; i < size; ++i) {
@@ -145,7 +141,7 @@ public:
         poly = res.poly;
     }
 
-    void resize(){
+    void resize(){//start resize
         Polynomial res;
         res.poly = new Term [size];
         poly = res.poly;
@@ -153,10 +149,7 @@ public:
 
     }
 
-    void sortt(){
-
-
-
+    void sortt(){ //universal sort and data processing func
         for (int i = 0; i < size-1; ++i) {
             for (int j = i+1; j < size; ++j) {
                 if(poly[i].stepen == poly[j].stepen){
@@ -169,8 +162,6 @@ public:
             }
         }
         //сложили подобные
-
-
         for (int i = 0; i < size; ++i) {
             for (int j = i+1; j < size; ++j) {
                 if (poly[i].stepen < poly[j].stepen){
@@ -178,22 +169,6 @@ public:
                 }
             }
         }
-        //сортируем по степеням
-
-//        for (int i = 0; i < 2; ++i) {
-//            if(this->poly[i].stepen == 0 and this->poly[i].koef == 0){
-//                for (int j = i; j < 1; ++j) {
-//                    swap(this->poly[j],this->poly[j+1]);
-//                }
-//            }
-//        }
-//
-
     }
-
-
-
-
-
 };
 
